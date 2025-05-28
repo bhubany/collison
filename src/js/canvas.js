@@ -29,17 +29,17 @@ addEventListener("resize", () => {
   init();
 });
 
-addEventListener("click", () => {
-  init();
-});
+// addEventListener("click", () => {
+//   init();
+// });
 
 // Objects
-class Ball {
-  constructor(x, y, dx, dy, radius, color) {
+class Circle {
+  constructor(x, y, radius, color) {
     this.x = x;
     this.y = y;
-    this.dx = dx;
-    this.dy = dy;
+    this.dx = 1;
+    this.dy = 1;
     this.radius = radius;
     this.color = color;
   }
@@ -54,40 +54,38 @@ class Ball {
   }
 
   update() {
-    if (this.y + this.radius + this.dy > canvas.height) {
-      this.dy = -this.dy * friction;
-    } else {
-      this.dy += gravity;
-    }
+    // if (this.y + this.radius + this.dy > canvas.height) {
+    //   this.dy = -this.dy * friction;
+    // } else {
+    //   this.dy += gravity;
+    // }
 
-    if (
-      this.x + this.radius + this.dx > canvas.width ||
-      this.x - this.radius <= 0
-    ) {
-      this.dx = -this.dx;
-    }
+    // if (
+    //   this.x + this.radius + this.dx > canvas.width ||
+    //   this.x - this.radius <= 0
+    // ) {
+    //   this.dx = -this.dx;
+    // }
 
-    this.x += this.dx;
-    this.y += this.dy;
+    // this.x += this.dx;
+    // this.y += this.dy;
     this.draw();
   }
 }
 
+function getDistance(x1, y1, x2, y2) {
+  let dx = x2 - x1;
+  let dy = y2 - y1;
+
+  return Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2));
+}
+
 // Implementation
-let ball;
-let ballArray;
+let circle1;
+let circle2;
 function init() {
-  ballArray = [];
-  for (let i = 0; i < 400; i++) {
-    let radius = randomIntFromRange(8, 20);
-    let x = randomIntFromRange(0, canvas.width - radius);
-    let y = randomIntFromRange(0, canvas.height - radius);
-    let dx = randomIntFromRange(-2, 2);
-    let dy = randomIntFromRange(-2, 2);
-    let color = randomColor(colors);
-    let ball = new Ball(x, y, dx, dy, radius, color);
-    ballArray.push(ball);
-  }
+  circle1 = new Circle(300, 300, 100, "black");
+  circle2 = new Circle(undefined, undefined, 30, "red");
 }
 
 // Animation Loop
@@ -95,10 +93,19 @@ function animate() {
   requestAnimationFrame(animate);
   c.clearRect(0, 0, canvas.width, canvas.height);
 
-  c.fillText("HTML CANVAS BOILERPLATE", mouse.x, mouse.y);
-  ballArray.forEach((ball) => {
-    ball.update();
-  });
+  circle1.update();
+
+  circle2.x = mouse.x;
+  circle2.y = mouse.y;
+  circle2.update();
+
+  let distance = getDistance(circle1.x, circle1.y, circle2.x, circle2.y);
+
+  if (distance < circle1.radius + circle2.radius) {
+    circle1.color = "red";
+  } else {
+    circle1.color = "black";
+  }
 }
 
 init();
